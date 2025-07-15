@@ -21,25 +21,24 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=copilotorg -Dsonar.projectKey=copilotproj
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=lohi -Dsonar.projectKey=lohi_123
+
 
   snyk-scan:
-    needs: sonar-scan
-    if: always()
     name: Snyk Security Scan
+    needs: sonar-scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Snyk Security Scan
         uses: snyk/actions/maven@master
-        continue-on-error: true
+        continue-on-error: false
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
   zap-scan:
-    needs: snyk-scan
-    if: always()
     name: OWASP ZAP Scan
+    needs: snyk-scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
